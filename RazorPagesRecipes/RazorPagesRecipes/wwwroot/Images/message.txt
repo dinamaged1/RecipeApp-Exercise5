@@ -1,0 +1,70 @@
+<div class="modal fade" id="addModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">Add New Recipe</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <form asp-page-handler="add" method="post" enctype="multipart/form-data">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="mb-2">Recipe Title</label>
+                                        <input type="text" id="RecipeTitle" class="form-control" value="" name="title" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="mb-2">Ingredients</label>
+                                        <textarea class="form-control" type="text" id="RecipeIngredients" value="" name="ingredients"> </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="mb-2">Instructions</label>
+                                        <textarea class="form-control" type="text" id="RecipeInstructions" value="" name="instructions"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="my-4" asp-for="@Model.RecipeImage">Recipe Image</label>
+                                        <input class="form-control" asp-for="@Model.RecipeImage" type="file" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                @for (int i = 0; i < Model.Categories.Count; i++)
+                                {
+                                    var index = i;
+                                    var category = Model.Categories[i];
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <input asp-for="@Model.IsCheckedCategory[index]" class="form-check-input c-form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                            <label class="form-check-label" for="defaultCheck1">
+                                                @category
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="modal-footer c-modal-footer">
+                            <button type="button" class="btn c-cancel-button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                            <button type="submit" class="btn c-confirm-button">Confirm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

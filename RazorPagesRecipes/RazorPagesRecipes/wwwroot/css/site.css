@@ -1,0 +1,529 @@
+:root {
+    --blue: #1e90ff;
+    --white: #ffffff;
+}
+
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    overflow-x: hidden
+}
+
+.c-header {
+    position: sticky;
+}
+
+.c-nav-item {
+    margin-left: 3%;
+    color: #AF6B1E;
+}
+
+.c-nav-color {
+    color: black !important;
+}
+
+.c-nav-link {
+    font-size: large;
+}
+
+.c-section1 {
+    min-height: 710px;
+    padding: 0px !important;
+    margin: 0px !important;
+    position: relative;
+}
+
+.c-first-color {
+    height: 483px;
+    background-color: #efe2d5;
+    margin: 0px !important;
+    position: relative;
+}
+
+.c-text-block {
+    top: 23%;
+    margin-left: 2%;
+}
+
+.c-first-text {
+    font-family: Merriweather, serif !important;
+    font-size: 5vw;
+    font-weight: 700;
+}
+
+.c-font {
+    font-family: Merriweather, serif !important;
+}
+
+.c-read-more-button {
+    color: black;
+    text-decoration: none;
+    border-style: solid;
+    border-width: 1px;
+    margin: 30px auto 0 0;
+    padding: 3% 4%;
+}
+
+    .c-read-more-button:hover {
+        color: dimgrey;
+    }
+
+.c-second-color-div {
+    min-height: 20vh;
+}
+
+.c-first-img-home {
+    padding-top: 24vh;
+}
+
+.c-third-img-home {
+}
+
+.c-shadow {
+    filter: drop-shadow(3px 5px 5px black);
+}
+
+.c-space-div {
+    width: 80vh;
+}
+
+.c-categories-page {
+    background-color: #efe2d5;
+    height: 100%;
+    min-height: 100vh;
+    padding: 0px;
+    padding-bottom: 1vh;
+}
+
+.c-categories-header {
+    flex: 0 0 auto;
+}
+
+.c-category-row {
+    background-color: white;
+    min-height: 10%;
+    border-radius: 15px;
+    filter: drop-shadow(3px 3px 4px grey);
+    display: flex;
+    align-items: center;
+    transition: transform 1s;
+}
+
+    .c-category-row:hover {
+        transform: translateY(-10px)
+    }
+
+.c-category-text-div {
+    font-size: 20px;
+    margin-left: 3%;
+    flex-grow: 8;
+}
+
+.c-category-text {
+    font-weight: 400;
+    margin-top: 1rem !important;
+}
+
+.c-category-remove-div {
+    margin-right: 5%;
+    margin-left: 4%;
+    cursor: pointer;
+}
+
+.c-category-remove-div {
+    margin-right: 5%;
+    margin-left: 4%;
+    cursor: pointer;
+}
+
+    .c-category-remove-div:hover {
+        cursor: pointer;
+        color: gray;
+    }
+
+.c-category-edit-div:hover {
+    cursor: pointer;
+    color: gray;
+}
+
+.c-confirm-button {
+    border-radius: 40px;
+    color: white;
+    background-color: #BE6F5E;
+}
+
+.c-cancel-button {
+    background-color: none;
+    border-radius: 40px;
+    border-color: #BE6F5E;
+}
+
+.c-add-button {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 40px;
+    border-color: black;
+    font-weight: 500;
+    float: right;
+    margin-right: 7%;
+    margin-top: auto;
+}
+
+.c-edit-modal-body {
+    margin: 20px 0px;
+}
+
+.c-modal-footer {
+    border-top: none !important;
+}
+
+.c-delete-modal-header {
+    border-bottom: none;
+}
+
+.c-delete-confirmation-text {
+    margin-top: 5%
+}
+
+.c-delete-modal-title {
+    padding-left: 8rem !important;
+    margin-top: 5px;
+}
+
+.c-delete-trash {
+    border-radius: 50%;
+    border-color: #e62222;
+    border-style: solid;
+    width: 70px;
+}
+
+.c-delete-modal-content {
+    width: 75%;
+}
+
+.c-cancel-delete {
+    border-color: #E62222;
+    padding: 0.4rem 1rem;
+}
+
+.c-delete-button {
+    border-radius: 40px;
+    color: white;
+    background-color: #E62222;
+}
+
+.c-form-check-input:checked {
+    background-color: #cbacaa;
+    border-color: #993d36;
+}
+
+.form-control:focus {
+    border-color: #cbacaa;
+    box-shadow: 0 0 0 0.25rem #cbacaa63;
+}
+
+.c-recipe-header {
+    margin-left: 7% !important;
+    margin-right: 0%;
+}
+
+.c-font-color {
+    color: #8c412ab3;
+}
+
+.c-recipe-page {
+    background-color: #f2f2f2;
+    height: 100%;
+    padding: 0px;
+}
+
+.c-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 100px;
+}
+
+    .c-cards-container > .c-card-div {
+        background-color: #f1f1f1;
+        width: 300px;
+        margin: 10px;
+        text-align: center;
+        font-size: 10px;
+    }
+
+.c-circle-img-div {
+    width: 298px;
+    height: 298px;
+}
+
+.c-categories-container-recipe {
+    text-align: start;
+    font-size: 15px;
+}
+
+.c-category-btn {
+    border-radius: 25px;
+    font-weight: 800
+}
+
+.c-card-img {
+    object-fit: cover;
+    border-radius: 50%;
+    padding: 10%;
+    width: 100%;
+    height: 100%;
+}
+
+.c-details-btn {
+    color: black;
+    text-decoration: none;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #d9c6c0b3;
+    background-color: #d9c6c052;
+    padding: 10px 30px;
+    cursor: pointer;
+}
+
+    .c-details-btn:hover {
+        background-color: #95422852;
+    }
+
+.c-add--recipe-button {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 40px;
+    border-color: #d9c6c0b3;
+    font-weight: 500;
+    background-color: white;
+}
+
+.c-recipe-font {
+}
+
+.c-card-div {
+    background-color: white !important;
+}
+
+.c-recipe-details-page {
+    background-color: #e6cdcd;
+    height: 100%;
+    min-height: 95vh;
+    padding: 0px;
+}
+
+.c-recipe-container {
+    display: flex;
+    height: 100%;
+}
+
+.c-back-button {
+    color: black;
+}
+
+    .c-back-button:hover {
+        color: grey;
+    }
+
+.c-text-container {
+    flex-grow: 1;
+}
+
+.c-image-container {
+    flex-grow: 1;
+}
+
+.c-white-background {
+    width: 441px;
+    height: 430px;
+    background-color: white;
+    position: absolute;
+    margin-top: 5%;
+    margin-left: 15%
+}
+
+.c-image-container-details {
+    text-align: center;
+    position: relative;
+    top: 3%;
+    left: -20%;
+    min-height: 122%;
+    min-width: 100%;
+    max-height: 125%;
+    max-width: 105%;
+}
+
+.c-recipe-image-detail {
+    object-fit: cover;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    right: 0;
+    border-width: 11px;
+    border-style: solid;
+    border-color: white;
+}
+
+.c-image-container-details-first-col {
+    width: 50%;
+    height: 39%;
+    margin-left: 25%;
+    border-width: 5px;
+    border-style: solid;
+    border-color: white;
+}
+
+.c-recipe-image-detail-first-col {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    right: 0;
+}
+
+.c-recipe-font {
+    font-family: 'Merienda', cursive;
+    text-align: center;
+}
+
+.c-delete-modal-title-recipe {
+    padding-left: 1.7rem !important;
+    margin-top: 6px;
+}
+
+.c-delete-confirmation-text-recipe {
+    margin-top: 5%;
+    font-size: large;
+}
+
+.c-edit-recipe-label {
+    font-size: large;
+}
+
+.c-modal-footer--sticky {
+    position: sticky;
+    top: 0;
+}
+
+.c-edit-modal-content {
+    text-align: start !important;
+    font-size: medium !important;
+}
+
+@media screen and (max-width: 1360px) {
+    .c-white-background {
+        width: 400px;
+        height: 387px;
+    }
+
+    .c-add-button {
+        margin-right: 10%
+    }
+}
+
+@media screen and (max-width: 1219px) {
+    .c-white-background {
+        width: 350px;
+        height: 335px;
+    }
+}
+
+@media screen and (max-width: 1219px) {
+    .c-white-background {
+        width: 33vw;
+        height: 30vw;
+    }
+}
+
+@media screen and (max-width: 664px) {
+    .c-recipe-header {
+        flex: 0 0 auto;
+        width: 55%;
+    }
+
+    .c-add-button {
+        margin-right: 13%
+    }
+}
+
+@media screen and (max-width: 735px) {
+    .c-cards-container {
+        padding-left: 3%;
+    }
+
+        .c-cards-container > .c-card-div {
+            width: 100%;
+        }
+
+    .c-circle-img-div {
+        align-self: center;
+    }
+
+    .c-recipe-img-col {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 735px) {
+    .c-image-container-details-first-col {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 760px) {
+    .c-second-color-div {
+        min-height: 82vh;
+    }
+
+    .c-first-img-home {
+        margin-bottom: 2.5%
+    }
+
+    .c-first-img-home-copy {
+        margin-bottom: 3%
+    }
+
+    .logo-image {
+        width: 250px;
+    }
+}
+
+@media screen and (max-width: 566px) {
+    .c-first-img-home {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 566px) {
+    .c-first-img-home-copy {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .c-text-block {
+        min-width: 100% !important;
+        margin-bottom: 10%;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .logo-image {
+        width: 150px;
+    }
+}

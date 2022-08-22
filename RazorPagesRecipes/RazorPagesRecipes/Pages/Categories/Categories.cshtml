@@ -1,0 +1,130 @@
+﻿@page
+@model RazorPagesRecipes.Pages.Categories.CategoriesModel
+@{
+    ViewData["Title"] = "Categories";
+}
+<div class="c-categories-page">
+    <div class="row">
+        <h1 class="col c-font pt-5 ms-5">
+            Categories
+        </h1>
+        <div class="col pt-5">
+            <button class="btn c-add-button" data-bs-toggle="modal" data-bs-target="#addModal">
+                Add new
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    @{Model.Categories.Sort();}
+    @for (int i = 0; i < Model.Categories.Count; i++)
+    {
+        var category = Model.Categories[i];
+        <div class="c-category-row my-4 mx-5">
+            <div class="c-category-text-div  "><p class="c-category-text mt-2">@category</p></div>
+            <div class="c-category-edit-div" data-bs-toggle="modal" data-bs-target="#editModal@(i)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                </svg>
+            </div>
+            <div class="c-category-remove-div" data-bs-toggle="modal" data-bs-target="#deleteModal@(i)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                    <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
+                </svg>
+            </div>
+        </div>
+        <!-- Edit Modal -->
+        <div class="modal fade" id="editModal@(i)" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Edit @category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form asp-page-handler="update" method="post">
+                        <div class="modal-body c-edit-modal-body">
+                            <div class="form-group">
+                                <input type="hidden" value=@category asp-for="@Model.CategoryOld">
+                                <label asp-for="@Model.CategoryNew" class="mb-2"> Enter new category name</label>
+                                <input asp-for="@Model.CategoryNew" type="text" id="categoryName" class="form-control" value="@category" required />
+                            </div>
+                        </div>
+                        <div class="modal-footer c-modal-footer">
+                            <button type="button" class="btn c-cancel-button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                            <button type="submit" class="btn c-confirm-button">Confirm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Delete Modal -->
+        <div class="modal fade" id="deleteModal@(i)" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content c-delete-modal-content">
+                    <div class="modal-header c-delete-modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form asp-page-handler="delete" method="post">
+                        <div class="modal-body row justify-content-center pt-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="65" height="70" fill="#e62222" class="bi bi-trash3-fill c-delete-trash" viewBox="0 0 16 16">
+                                <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                            </svg>
+                            <h2 class="ps-5 c-delete-modal-title">Delete?</h2>
+                            <p class="c-delete-confirmation-text">
+                                Are you sure you want to delete <b>@category</b> category?
+                            </p>
+                        </div>
+                        <input type="hidden" asp-for="@Model.ToBeDeletedCategory" value="@category">
+                        <div class="modal-footer c-modal-footer container row justify-content-center">
+                            <button type="button" class="btn c-cancel-button c-cancel-delete col-3 me-3 " data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                            <button type="submit" class="btn c-delete-button col-3 ms-3">Delete</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- Add Modal -->
+    <div class="modal fade" id="addModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addModalLabel">Add new category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-page-handler="add" method="post">
+                    <div class="modal-body c-edit-modal-body">
+                        <div class="form-group">
+                            <label asp-for="@Model.CategoryNew" class="mb-2"> Enter new category name</label>
+                            <input asp-for="@Model.CategoryNew" type="text" id="categoryName" class="form-control" value="" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer c-modal-footer">
+                        <button type="button" class="btn c-cancel-button" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                        <button type="submit" class="btn c-confirm-button">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    if (`@TempData["confirmation"]` == "succeed") {
+        Swal.fire({
+            icon: 'success',
+            title: `@TempData["details"]`,
+            showConfirmButton: false,
+            timer: 3000
+        })
+    }
+    else if(`@TempData["confirmation"]` == "failed") {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: `@TempData["details"]`,
+        })
+    }
+</script>

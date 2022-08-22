@@ -1,0 +1,50 @@
+﻿@page "{id}"
+@model RazorPagesRecipes.Pages.Recipes.RecipeDetailsModel
+@{
+    ViewData["Title"] = "Recipe Details";
+}
+<link href="https://fonts.googleapis.com/css2?family=Merienda&family=Scheherazade+New&display=swap" rel="stylesheet">
+
+<div class="c-recipe-details-page" id="detailspage">
+    <div class="row">
+        <div class="col">
+            <a asp-page="Recipes" class="c-back-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16" style="margin-top:1%; margin-left:1%; cursor:pointer">
+                    <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
+                </svg>
+            </a>
+            <h1 class="c-recipe-font pt-3">@Model.RecipeDetails.Title</h1>
+            <hr />
+            <div class="c-image-container-details-first-col">
+                <img src="@Model.RecipeDetails.Imagepath" class="c-recipe-image-detail-first-col" />
+            </div>
+            <div class="c-Ingredients ps-4 pt-5 card-body">
+                <h3>Ingredients</h3>
+                <ul>
+                    @foreach (var ingredient in Model.RecipeDetails.Ingredients)
+                    {
+                        <li>@ingredient</li>
+                    }
+                </ul>
+            </div>
+            <div class="c-Ingredients ps-4 pt-5 card-body">
+                <h3>Steps</h3>
+                <ol>
+                    @foreach (var instruction in Model.RecipeDetails.Instructions)
+                    {
+                        <li>@instruction</li>
+                    }
+                </ol>
+            </div>
+        </div>
+        <div class="col c-recipe-img-col">
+            <div class="c-white-background">
+                <div class="c-image-container-details">
+                    <img src="@Model.RecipeDetails.Imagepath" class="c-recipe-image-detail" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
