@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcRecipeApp";
+
+service Categories{
+	rpc GetCategories (Void) returns (stream CategoryModel);
+	rpc CreateCategory (CategoryModel) returns (CategoryModel);
+	rpc UpdateCategory (UpdateCategoryRequest) returns (CategoryModel);
+	rpc DeleteCategory (CategoryModel) returns (CategoryModel);
+} 
+
+message Void {}
+
+message CategoryModel{
+	string category = 1;
+}
+
+message UpdateCategoryRequest{
+	string old_category_name = 1;
+	string new_category_name = 2;
+}
