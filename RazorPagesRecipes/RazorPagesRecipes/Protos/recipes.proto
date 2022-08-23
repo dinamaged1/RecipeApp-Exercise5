@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcRecipeApp.Protos";
+
+service Recipes{
+	rpc GetRecipes (Void) returns (stream RecipeModel);
+	rpc GetRecipe (RecipeLookUpModel) returns (RecipeModel);
+	rpc CreateRecipe (RecipeModel) returns (RecipeModel);
+	rpc UpdateRecipe (UpdateRecipeRequest) returns (RecipeModel);
+	rpc DeleteRecipe (RecipeLookUpModel) returns (RecipeModel)
+}
+
+message Void {}
+
+message RecipeLookUpModel{
+	string id=1;
+}
+
+message RecipeModel{
+	string id = 1;
+	string title = 2;
+	repeated string ingredients = 3;
+	repeated string instructions = 4;
+	repeated string categories = 5;
+}
+
+message UpdateRecipeRequest{
+	string id = 1;
+	RecipeModel edited_recipe = 2;
+}
