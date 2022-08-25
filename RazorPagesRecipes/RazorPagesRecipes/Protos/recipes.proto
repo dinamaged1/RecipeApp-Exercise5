@@ -7,7 +7,7 @@ service Recipes{
 	rpc GetRecipe (RecipeLookUpModel) returns (RecipeModel);
 	rpc CreateRecipe (RecipeModel) returns (RecipeModel);
 	rpc UpdateRecipe (UpdateRecipeRequest) returns (RecipeModel);
-	rpc DeleteRecipe (RecipeLookUpModel) returns (RecipeModel)
+	rpc DeleteRecipe (RecipeLookUpModel) returns (RecipeModel);
 }
 
 message Void {}

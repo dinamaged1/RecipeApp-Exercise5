@@ -7,17 +7,33 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Protos\categories.proto" />
+    <None Remove="Protos\recipes.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\Images\logo.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.17.1" />
+    <PackageReference Include="Google.Protobuf" Version="3.21.5" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.47.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.48.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.2.9" />
-    <PackageReference Include="NuGet.Configuration" Version="6.2.1" />
+    <PackageReference Include="NuGet.Configuration" Version="6.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\RecipesImages\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\categories.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\recipes.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>

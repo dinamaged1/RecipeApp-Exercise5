@@ -7,7 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Protos\categories.proto" />
+    <None Remove="Protos\recipes.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\categories.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\recipes.proto" GrpcServices="Server" />
   </ItemGroup>
 
   <ItemGroup>
