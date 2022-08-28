@@ -16,10 +16,6 @@ namespace GrpcRecipeApp.Services
             _logger = logger;
         }
 
-        public RecipesService()
-        {
-        }
-
         public override async Task GetRecipes(Protos.Void request, IServerStreamWriter<RecipeModel> responseStream, ServerCallContext context)
         {
             await LoadRecipes();
@@ -29,9 +25,77 @@ namespace GrpcRecipeApp.Services
             }
         }
 
-        public override Task<RecipeModel> CreateRecipe(RecipeModel request, ServerCallContext context)
+        public override async Task<RecipeModel> GetRecipe(RecipeLookUpModel request, ServerCallContext context)
         {
-            return base.CreateRecipe(request, context);
+            var selectedRecipe = _recipes.RecipesList.FirstOrDefault(x => x.Id == request.Id);
+            if (selectedRecipe == null)
+            {
+                throw new RpcException(new Status(StatusCode.NotFound, "Recipe not found"));
+            }
+            else
+            {
+                return selectedRecipe;
+            }
+        }
+
+        public override async Task<RecipeModel> CreateRecipe(RecipeModel request, ServerCallContext context)
+        {
+            if(request == null )
+            {
+                throw new RpcException(new Status(StatusCode.PermissionDenied, "Permission denied"));
+            }
+            if(request.Title == string.Empty || request.Id == string.Empty || request.ImagePath == string.Empty || request.Ingredients == null || request.Instructions == null || request.Categories == null)
+            {
+                throw new RpcException(new Status(StatusCode.PermissionDenied, "Inputs are not complete"));
+            }
+            else
+            {
+                _recipes.RecipesList.Add(request);
+                await SaveRecipeToJson();
+                return request;
+            }
+        }
+
+        public override async Task<RecipeModel> UpdateRecipe(UpdateRecipeRequest request, ServerCallContext context)
+        {
+            if (request == null)
+            {
+                throw new RpcException(new Status(StatusCode.PermissionDenied, "Permission denied"));
+            }
+            else if (request.EditedRecipe.Title == string.Empty || request.EditedRecipe.Id == string.Empty || request.EditedRecipe.ImagePath == string.Empty || request.EditedRecipe.Ingredients == null || request.EditedRecipe.Instructions == null || request.EditedRecipe.Categories == null)
+            {
+                throw new RpcException(new Status(StatusCode.PermissionDenied, "Inputs are not complete"));
+            }
+            else
+            {
+                var selectedRecipe= _recipes.RecipesList.FirstOrDefault(x => x.Id == request.Id);
+                var selectedRecipeIndex= _recipes.RecipesList.IndexOf(selectedRecipe);
+                if (selectedRecipeIndex == -1)
+                {
+                    throw new RpcException(new Status(StatusCode.PermissionDenied, "Permission denied"));
+                }
+                else
+                {
+                    _recipes.RecipesList[selectedRecipeIndex] = request.EditedRecipe;
+                    await SaveRecipeToJson();
+                    return request.EditedRecipe;
+                }
+            }
+        }
+
+        public override async Task<RecipeModel> DeleteRecipe(RecipeLookUpModel request, ServerCallContext context)
+        {
+            var selectedRecipe=_recipes.RecipesList.FirstOrDefault(x => x.Id == request.Id);
+            if (selectedRecipe == null)
+            {
+                throw new RpcException(new Status(StatusCode.PermissionDenied, "Permission denied"));
+            }
+            else
+            {
+                _recipes.RecipesList.Remove(selectedRecipe);
+                await SaveRecipeToJson();
+                return selectedRecipe;
+            }
         }
 
         public async Task TestAddRecipe(){

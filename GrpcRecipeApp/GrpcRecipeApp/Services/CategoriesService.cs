@@ -1,5 +1,6 @@
 ﻿using Grpc.Core;
 using GrpcRecipeApp;
+using GrpcRecipeApp.Protos;
 using System.Text.Json;
 
 namespace GrpcRecipeApp.Services
@@ -8,7 +9,7 @@ namespace GrpcRecipeApp.Services
     {
         private readonly ILogger<CategoriesService> _logger;
         private List<string> _categories = new();
-        private List<Recipe> _recipes = new();
+        private Protos.RecipeListModel _recipes = new();
         public CategoriesService(ILogger<CategoriesService> logger)
         {
             _logger = logger;
@@ -27,15 +28,20 @@ namespace GrpcRecipeApp.Services
         {
             await LoadCaregories();
             string newCategory = request.Category;
-            if (!_categories.Contains(newCategory) && newCategory != "")
+            if (_categories.Contains(newCategory))
+            {
+                throw new RpcException(new Status(StatusCode.PermissionDenied, "Entered category already exist"));
+
+            }
+            else if(newCategory == "")
+            {
+                throw new RpcException(new Status(StatusCode.PermissionDenied, "The input is empty"));
+            }
+            else
             {
                 _categories.Add(newCategory);
                 await SaveCategoryToJson();
                 return request;
-            }
-            else
-            {
-                throw new RpcException(new Status(StatusCode.PermissionDenied, "Permission denied"));
             }
         }
 
@@ -50,13 +56,13 @@ namespace GrpcRecipeApp.Services
                 _categories[indexOfCategory] = newCategory;
 
                 //Edit the category name for each recipe belog to this category
-                for (int i = 0; i < _recipes.Count; i++)
+                for (int i = 0; i < _recipes.RecipesList.Count; i++)
                 {
-                    for (int j = 0; j < _recipes[i].Categories.Count; j++)
+                    for (int j = 0; j < _recipes.RecipesList[i].Categories.Count; j++)
                     {
-                        if (_recipes[i].Categories[j] == oldCategory)
+                        if (_recipes.RecipesList[i].Categories[j] == oldCategory)
                         {
-                            _recipes[i].Categories[j] = newCategory;
+                            _recipes.RecipesList[i].Categories[j] = newCategory;
                         }
                     }
                 }
@@ -80,13 +86,13 @@ namespace GrpcRecipeApp.Services
                 _categories.Remove(deleteCategory);
 
                 //Remove this category from each recipe
-                for (int i = 0; i < _recipes.Count; i++)
+                for (int i = 0; i < _recipes.RecipesList.Count; i++)
                 {
-                    for (int j = 0; j < _recipes[i].Categories.Count; j++)
+                    for (int j = 0; j < _recipes.RecipesList[i].Categories.Count; j++)
                     {
-                        if (_recipes[i].Categories[j] == deleteCategory)
+                        if (_recipes.RecipesList[i].Categories[j] == deleteCategory)
                         {
-                            _recipes[i].Categories.Remove(_recipes[i].Categories[j]);
+                            _recipes.RecipesList[i].Categories.Remove(_recipes.RecipesList[i].Categories[j]);
                         }
                     }
                 }
@@ -111,7 +117,7 @@ namespace GrpcRecipeApp.Services
         {
             string recipeJson = await ReadJsonFile("recipe");
             if (recipeJson == null) { return; }
-            _recipes = JsonSerializer.Deserialize<List<Recipe>>(recipeJson)!;
+            _recipes = JsonSerializer.Deserialize<RecipeListModel>(recipeJson)!;
         }
 
         public async Task<string> ReadJsonFile(string fileName) =>
