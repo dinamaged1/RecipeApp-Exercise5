@@ -17,7 +17,9 @@ namespace GrpcRecipeApp.Services
 
         public override async Task GetCategories(Void request, IServerStreamWriter<CategoryModel> responseStream, ServerCallContext context)
         {
+
             await LoadCaregories();
+            Console.WriteLine(_categories);
             foreach (var categoryItem in _categories)
             {
                 await responseStream.WriteAsync(new CategoryModel { Category = categoryItem });

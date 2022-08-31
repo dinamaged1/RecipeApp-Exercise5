@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "GrpcRecipeApp.Protos";
+option csharp_namespace = "RazorPagesRecipes.Protos";
 
 service Recipes{
 	rpc GetRecipes (Void) returns (stream RecipeModel);
@@ -19,9 +19,14 @@ message RecipeLookUpModel{
 message RecipeModel{
 	string id = 1;
 	string title = 2;
-	repeated string ingredients = 3;
-	repeated string instructions = 4;
-	repeated string categories = 5;
+	string image_path=3;
+	repeated string ingredients = 4;
+	repeated string instructions = 5;
+	repeated string categories = 6;
+}
+
+message RecipeListModel{
+	repeated RecipeModel recipes_list=1;
 }
 
 message UpdateRecipeRequest{

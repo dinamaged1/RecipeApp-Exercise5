@@ -1,54 +1,54 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using RazorPagesRecipes;
 using System.Text;
+using Grpc.Net.Client;
+using Grpc.Core;
+using RazorPagesRecipes;
+using RazorPagesRecipes.Protos;
 using System.Text.Json;
 
 namespace RazorPagesRecipes.Pages.Categories
 {
     public class CategoriesModel : PageModel
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly HttpClient _httpClient;
+        private readonly RazorPagesRecipes.Categories.CategoriesClient _client;
         public bool IsRequestSucceed { get; }
         public List<string> Categories { get; set; } = new List<string>();
         [BindProperty]
-        public string CategoryNew { get; set; }
+        public string CategoryNew { get; set; } = String.Empty;
         [BindProperty]
-        public string CategoryOld { get; set; }
+        public string CategoryOld { get; set; } = String.Empty;
         [BindProperty]
-        public string ToBeDeletedCategory { get; set; }
+        public string ToBeDeletedCategory { get; set; } = String.Empty;
         [BindProperty]
-        public string Message { get; set; }
+        public string Message { get; set; } = String.Empty;
 
-        public CategoriesModel(IHttpClientFactory client)
+        public CategoriesModel(RazorPagesRecipes.Categories.CategoriesClient categoriesClient)
         {
-            _httpClientFactory = client;
-            _httpClient = _httpClientFactory.CreateClient("recipe");
+            _client = categoriesClient;
         }
-
 
         // Get all categories
         public async Task OnGet()
         {
-            var httpResponseMessage =
-                 await _httpClient.GetAsync($"/categories");
-            bool isRequestSucceed = httpResponseMessage.IsSuccessStatusCode;
-            var categoryData = await httpResponseMessage.Content.ReadAsStringAsync();
-            Categories = JsonSerializer.Deserialize<List<string>>(categoryData);
+            var getCategoriesReply = _client.GetCategories(new RazorPagesRecipes.Void());
+
+            using var tokenSource = new CancellationTokenSource();
+            CancellationToken token = tokenSource.Token;
+
+            await foreach (var cate in getCategoriesReply.ResponseStream.ReadAllAsync(token))
+            {
+                Categories.Add(cate.Category);
+            }
         }
 
         // Add new category
         public async Task<IActionResult> OnPostAdd()
         {
-            var categoryItemJson = new StringContent(
-                        JsonSerializer.Serialize(CategoryNew),
-                        Encoding.UTF8,
-                        "application/json");
-
-            using var httpResponseMessage =
-                await _httpClient.PostAsync("/category", categoryItemJson);
-            try { httpResponseMessage.EnsureSuccessStatusCode(); }
+            try
+            {
+                var createCategoriesReply = await _client.CreateCategoryAsync(new CategoryModel { Category = CategoryNew });
+            }
             catch (Exception ex)
             {
                 TempData["confirmation"] = "failed";
@@ -56,7 +56,7 @@ namespace RazorPagesRecipes.Pages.Categories
                 return RedirectToPage("Categories");
             }
             TempData["confirmation"] = "succeed";
-            TempData["details"]= $"{CategoryNew} category added successfully 😁";
+            TempData["details"] = $"{CategoryNew} category added successfully 😁";
             return RedirectToPage("Categories");
 
         }
@@ -66,14 +66,10 @@ namespace RazorPagesRecipes.Pages.Categories
         {
             if (CategoryNew != CategoryOld)
             {
-                var newCategoryJson = new StringContent(
-                    JsonSerializer.Serialize(CategoryNew),
-                    Encoding.UTF8,
-                    "application/json");
-
-                using var httpResponseMessage =
-                    await _httpClient.PutAsync($"/category/{CategoryOld}", newCategoryJson);
-                try { httpResponseMessage.EnsureSuccessStatusCode(); }
+                try
+                {
+                    var createCategoriesReply = _client.UpdateCategory(new UpdateCategoryRequest { OldCategoryName = CategoryOld, NewCategoryName = CategoryNew });
+                }
                 catch (Exception ex)
                 {
                     TempData["confirmation"] = "failed";
@@ -92,10 +88,9 @@ namespace RazorPagesRecipes.Pages.Categories
 
         public async Task<IActionResult> OnPostDelete()
         {
-            using var httpResponseMessage =
-                await _httpClient.DeleteAsync($"/category/{ToBeDeletedCategory}");
-
-            try { httpResponseMessage.EnsureSuccessStatusCode(); }
+            try {
+                _client.DeleteCategory(new CategoryModel { Category = ToBeDeletedCategory });
+            }
             catch (Exception ex)
             {
                 TempData["confirmation"] = "failed";
