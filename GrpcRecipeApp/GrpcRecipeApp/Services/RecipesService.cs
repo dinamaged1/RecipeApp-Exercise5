@@ -10,7 +10,7 @@ namespace GrpcRecipeApp.Services
     {
         private readonly ILogger<CategoriesService> _logger;
         private List<string> _categories = new();
-        private RecipeListModel _recipes = new();
+        private List<RecipeModel> _recipes = new();
         public RecipesService(ILogger<CategoriesService> logger)
         {
             _logger = logger;
@@ -19,7 +19,7 @@ namespace GrpcRecipeApp.Services
         public override async Task GetRecipes(Protos.Void request, IServerStreamWriter<RecipeModel> responseStream, ServerCallContext context)
         {
             await LoadRecipes();
-            foreach (RecipeModel recipe in _recipes.RecipesList)
+            foreach (RecipeModel recipe in _recipes)
             {
                 await responseStream.WriteAsync(recipe);
             }
@@ -27,7 +27,7 @@ namespace GrpcRecipeApp.Services
 
         public override async Task<RecipeModel> GetRecipe(RecipeLookUpModel request, ServerCallContext context)
         {
-            var selectedRecipe = _recipes.RecipesList.FirstOrDefault(x => x.Id == request.Id);
+            var selectedRecipe = _recipes.FirstOrDefault(x => x.Id == request.Id);
             if (selectedRecipe == null)
             {
                 throw new RpcException(new Status(StatusCode.NotFound, "Recipe not found"));
@@ -50,7 +50,7 @@ namespace GrpcRecipeApp.Services
             }
             else
             {
-                _recipes.RecipesList.Add(request);
+                _recipes.Add(request);
                 await SaveRecipeToJson();
                 return request;
             }
@@ -68,15 +68,15 @@ namespace GrpcRecipeApp.Services
             }
             else
             {
-                var selectedRecipe= _recipes.RecipesList.FirstOrDefault(x => x.Id == request.Id);
-                var selectedRecipeIndex= _recipes.RecipesList.IndexOf(selectedRecipe);
+                var selectedRecipe= _recipes.FirstOrDefault(x => x.Id == request.Id);
+                var selectedRecipeIndex= _recipes.IndexOf(selectedRecipe);
                 if (selectedRecipeIndex == -1)
                 {
                     throw new RpcException(new Status(StatusCode.PermissionDenied, "Permission denied"));
                 }
                 else
                 {
-                    _recipes.RecipesList[selectedRecipeIndex] = request.EditedRecipe;
+                    _recipes[selectedRecipeIndex] = request.EditedRecipe;
                     await SaveRecipeToJson();
                     return request.EditedRecipe;
                 }
@@ -85,14 +85,14 @@ namespace GrpcRecipeApp.Services
 
         public override async Task<RecipeModel> DeleteRecipe(RecipeLookUpModel request, ServerCallContext context)
         {
-            var selectedRecipe=_recipes.RecipesList.FirstOrDefault(x => x.Id == request.Id);
+            var selectedRecipe=_recipes.FirstOrDefault(x => x.Id == request.Id);
             if (selectedRecipe == null)
             {
                 throw new RpcException(new Status(StatusCode.PermissionDenied, "Permission denied"));
             }
             else
             {
-                _recipes.RecipesList.Remove(selectedRecipe);
+                _recipes.Remove(selectedRecipe);
                 await SaveRecipeToJson();
                 return selectedRecipe;
             }
@@ -106,7 +106,7 @@ namespace GrpcRecipeApp.Services
             newRecipe.Instructions.Add("ins1");
             newRecipe.Instructions.Add("ins2");
             newRecipe.Categories.Add("cat1");
-            _recipes.RecipesList.Add(newRecipe);
+            _recipes.Add(newRecipe);
             await SaveRecipeToJson();
     }
         public async Task LoadCaregories()
@@ -120,7 +120,7 @@ namespace GrpcRecipeApp.Services
         {
             string recipeJson = await ReadJsonFile("recipe");
             if (recipeJson == null) { return; }
-            _recipes = JsonSerializer.Deserialize<RecipeListModel>(recipeJson)!;
+            _recipes = JsonSerializer.Deserialize<List<RecipeModel>>(recipeJson)!;
         }
 
         public async Task<string> ReadJsonFile(string fileName) =>

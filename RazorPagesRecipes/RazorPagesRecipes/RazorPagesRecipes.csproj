@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\categories.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\categories.proto" GrpcServices="Both" />
     <Protobuf Include="Protos\recipes.proto" GrpcServices="Client" />
   </ItemGroup>
 

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using RazorPagesRecipes.Models;
+
 using System.Text.Json;
 
 namespace RazorPagesRecipes.Pages.Recipes
@@ -9,7 +9,7 @@ namespace RazorPagesRecipes.Pages.Recipes
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly HttpClient _httpClient;
-        public Recipe? RecipeDetails { get; set; }
+        //public Recipe? RecipeDetails { get; set; }
         public RecipeDetailsModel(IHttpClientFactory client)
         {
             _httpClientFactory = client;
@@ -20,7 +20,7 @@ namespace RazorPagesRecipes.Pages.Recipes
             var httpResponseMessage =
                 await _httpClient.GetAsync($"/recipe/{id}");
             var recipeData = httpResponseMessage.Content.ReadAsStringAsync().Result;
-            RecipeDetails = JsonSerializer.Deserialize<Recipe>(recipeData);
+            //RecipeDetails = JsonSerializer.Deserialize<Recipe>(recipeData);
 
         }
     }

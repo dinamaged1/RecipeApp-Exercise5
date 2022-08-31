@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Recipes";
     int i = 0;
-    var recipe = new RazorPagesRecipes.Models.Recipe();
+    var recipe = new RazorPagesRecipes.Protos.RecipeModel { Categories = { }, Title = "", Id = "", ImagePath = "", Ingredients = { }, Instructions = { } };
 }
 
 <div class="c-recipe-page">
@@ -27,7 +27,7 @@
             recipe = Model.Recipes[i];
             <div class="card c-card-div">
                 <div class="c-circle-img-div">
-                    <img src="@recipe.Imagepath" class="card-img-top c-card-img" alt="..." width="100" height="100">
+                    <img src="@recipe.ImagePath" class="card-img-top c-card-img" alt="..." width="100" height="100">
                 </div>
                 <div class="card-body">
                     <h5 class="card-title c-font-color">@recipe.Title</h5>
@@ -61,7 +61,7 @@
 
                                     <div class="form-group">
                                         <input type="hidden" asp-for="@Model.ChangebleId" value="@recipe.Id">
-                                        <input type="hidden" asp-for="@Model.ChangebleImagePath" value="@recipe.Imagepath">
+                                        <input type="hidden" asp-for="@Model.ChangebleImagePath" value="@recipe.ImagePath">
                                         <label class="c-edit-recipe-label mb-2">Recipe Title</label>
                                         <input type="text" id="RecipeTitle" class="form-control" value="@recipe.Title" name="title" required />
                                         <label class="c-edit-recipe-label mb-2 mt-2">Ingredients</label>
@@ -115,7 +115,7 @@
                                     </p>
                                 </div>
                                 <input type="hidden" asp-for="@Model.ChangebleId" value="@recipe.Id">
-                                <input type="hidden" asp-for="@Model.ChangebleImagePath" value="@recipe.Imagepath">
+                                <input type="hidden" asp-for="@Model.ChangebleImagePath" value="@recipe.ImagePath">
                                 <div class="modal-footer c-modal-footer container row justify-content-center">
                                     <button type="button" class="btn c-cancel-button c-cancel-delete col-3 me-3 " data-bs-dismiss="modal" aria-label="Close">Cancel</button>
                                     <button type="submit" class="btn c-delete-button col-3 ms-3">Delete</button>
