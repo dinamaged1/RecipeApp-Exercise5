@@ -51,6 +51,7 @@ namespace GrpcRecipeApp.Services
             }
             else
             {
+                await LoadRecipes();
                 _recipes.Add(request);
                 await SaveRecipeToJson();
                 return request;
