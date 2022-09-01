@@ -1,4 +1,5 @@
-﻿@page 
+﻿@page
+
 @model RazorPagesRecipes.Pages.Recipes.RecipesModel
 @{
     ViewData["Title"] = "Recipes";
@@ -66,7 +67,7 @@
                                         <input type="text" id="RecipeTitle" class="form-control" value="@recipe.Title" name="title" required />
                                         <label class="c-edit-recipe-label mb-2 mt-2">Ingredients</label>
                                         <textarea class="form-control" type="text" id="RecipeIngredients"
-                                              name="ingredients" rows="5" required>@string.Join($"\n",recipe.Ingredients.ToArray()) </textarea>
+                                                  name="ingredients" rows="5" required>@string.Join($"\n",recipe.Ingredients.ToArray()) </textarea>
                                         <label class="c-edit-recipe-label mb-2 mt-2">Instructions</label>
                                         <textarea class="form-control" type="text" id="RecipeInstructions" name="instructions" rows="5" required>@string.Join($"\n",recipe.Instructions.ToArray())</textarea>
                                         <div class="m-3"></div>
@@ -79,7 +80,12 @@
                                                 var index = j;
                                                 var category = @Model.Categories[index];
                                                 <div>
-                                                    <input asp-for="@Model.IsCheckedCategory[index]" class="form-check-input c-form-check-input" type="checkbox" id="defaultCheck1">
+                                                    @if (recipe.Categories.Contains(category))
+                                                    {
+                                                        <input asp-for="@Model.IsCheckedCategory[index]" class="form-check-input c-form-check-input" type="checkbox" id="defaultCheck1" checked="checked">
+                                                    }
+                                                    else
+                                                    { <input asp-for="@Model.IsCheckedCategory[index]" class="form-check-input c-form-check-input" type="checkbox" id="defaultCheck1">}
                                                     <label class="form-check-label" for="defaultCheck1">
                                                         @category
                                                     </label>
