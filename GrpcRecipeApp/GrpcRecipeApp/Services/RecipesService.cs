@@ -28,6 +28,7 @@ namespace GrpcRecipeApp.Services
 
         public override async Task<RecipeModel> GetRecipe(RecipeLookUpModel request, ServerCallContext context)
         {
+            await LoadRecipes();
             var selectedRecipe = _recipes.FirstOrDefault(x => x.Id == request.Id);
             if (selectedRecipe == null)
             {
@@ -60,6 +61,7 @@ namespace GrpcRecipeApp.Services
 
         public override async Task<RecipeModel> UpdateRecipe(UpdateRecipeRequest request, ServerCallContext context)
         {
+            await LoadRecipes();
             if (request == null)
             {
                 throw new RpcException(new Status(StatusCode.PermissionDenied, "Permission denied"));
@@ -87,6 +89,7 @@ namespace GrpcRecipeApp.Services
 
         public override async Task<RecipeModel> DeleteRecipe(RecipeLookUpModel request, ServerCallContext context)
         {
+            await LoadRecipes();
             var selectedRecipe = _recipes.FirstOrDefault(x => x.Id == request.Id);
             if (selectedRecipe == null)
             {
@@ -100,18 +103,6 @@ namespace GrpcRecipeApp.Services
             }
         }
 
-        public async Task TestAddRecipe()
-        {
-            RecipeModel newRecipe = new();
-            newRecipe.Id = "f3eb3803-76af-4e0e-805a-956344dd7eb1";
-            newRecipe.Title = "Hot Cocoa";
-            newRecipe.Ingredients.Add("ing1");
-            newRecipe.Instructions.Add("ins1");
-            newRecipe.Instructions.Add("ins2");
-            newRecipe.Categories.Add("cat1");
-            _recipes.Add(newRecipe);
-            await SaveRecipeToJson();
-        }
         public async Task LoadCaregories()
         {
             string categoryJson = await ReadJsonFile("category");

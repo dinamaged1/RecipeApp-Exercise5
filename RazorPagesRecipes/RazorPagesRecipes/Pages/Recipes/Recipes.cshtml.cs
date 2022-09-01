@@ -66,15 +66,6 @@ namespace RazorPagesRecipes.Pages.Recipes
             }
 
             Guid id = Guid.NewGuid();
-
-            // Get the image uploaded 
-            // Save it to RecipeImages folder
-            MemoryStream ms = new MemoryStream();
-            await RecipeImage.OpenReadStream().CopyToAsync(ms);
-            var data = ms.ToArray();
-            var filePath = $"{_host.WebRootPath}/RecipesImages/{id}.{System.IO.Path.GetExtension(RecipeImage.FileName)}";
-            System.IO.File.WriteAllBytes(filePath, data);
-
             string recipeTitle = Request.Form["title"];
             string recipeInstructionsInput = Request.Form["instructions"];
             string recipeIngredientsInput = Request.Form["ingredients"];
@@ -103,11 +94,21 @@ namespace RazorPagesRecipes.Pages.Recipes
             {
                 newRecipe.Categories.Add(category);
             }
-            try { var createRecipeReply =await _recipesClient.CreateRecipeAsync(newRecipe); }
+            try { 
+                var createRecipeReply =await _recipesClient.CreateRecipeAsync(newRecipe);
+
+                // Get the image uploaded 
+                // Save it to RecipeImages folder
+                MemoryStream ms = new MemoryStream();
+                await RecipeImage.OpenReadStream().CopyToAsync(ms);
+                var data = ms.ToArray();
+                var filePath = $"{_host.WebRootPath}/RecipesImages/{id}.{System.IO.Path.GetExtension(RecipeImage.FileName)}";
+                System.IO.File.WriteAllBytes(filePath, data);
+            }
             catch (Exception ex)
             {
                 TempData["confirmation"] = "failed";
-                TempData["details"] = $"{recipeTitle} recipe already exist!";
+                TempData["details"] = $"{recipeTitle} recipe not added!";
                 return RedirectToPage("Recipes");
             }
             TempData["confirmation"] = "succeed";
@@ -117,63 +118,74 @@ namespace RazorPagesRecipes.Pages.Recipes
 
         public async Task<IActionResult> OnPostUpdate()
         {
-            //    var httpResponseMessage =
-            //        await _httpClient.GetAsync($"/categories");
-            //    bool isRequestSucceed = httpResponseMessage.IsSuccessStatusCode;
-            //    var categoryData = await httpResponseMessage.Content.ReadAsStringAsync();
-            //    Categories = JsonSerializer.Deserialize<List<string>>(categoryData);
+            var getCategoriesReply = _categoriesClient.GetCategories(new RazorPagesRecipes.Void());
 
-            //    //Delete Image from folder RecipeImages
-            //    var filePathDelete = $"{_host.WebRootPath}{ChangebleImagePath}";
-            //    System.IO.File.Delete(filePathDelete);
+            using var tokenSource = new CancellationTokenSource();
+            CancellationToken token = tokenSource.Token;
 
-            //    Guid idNew = Guid.NewGuid();
-            //    // Get the image uploaded 
-            //    // Save it to RecipeImages folder
-            //    MemoryStream ms = new MemoryStream();
-            //    await RecipeImage.OpenReadStream().CopyToAsync(ms);
-            //    var data = ms.ToArray();
-            //    var filePath = $"{_host.WebRootPath}/RecipesImages/{idNew}.{System.IO.Path.GetExtension(RecipeImage.FileName)}";
-            //    System.IO.File.WriteAllBytes(filePath, data);
+            await foreach (var cate in getCategoriesReply.ResponseStream.ReadAllAsync(token))
+            {
+                Categories.Add(cate.Category);
+            }
 
-            //    string recipeTitle = Request.Form["title"];
-            //    string recipeInstructionsInput = Request.Form["instructions"];
-            //    string recipeIngredientsInput = Request.Form["ingredients"];
-            //    List<string> ingredientsList = recipeInstructionsInput.Split('\n').ToList();
-            //    List<string> instructionsList = recipeIngredientsInput.Split('\n').ToList();
-            //    string imagePath = $"/RecipesImages/{idNew}.{System.IO.Path.GetExtension(RecipeImage.FileName)}";
-            //    List<string> categoryList = new List<string>();
-            //    for (int i = 0; i < IsCheckedCategory.Count; i++)
-            //    {
-            //        if (IsCheckedCategory[i] == true)
-            //        {
-            //            categoryList.Add(Categories[i]);
-            //        }
-            //    }
-            //    Recipe newRecipe = new Recipe(idNew, recipeTitle, imagePath, ingredientsList, instructionsList, categoryList);
-            //    var recipeItemJson = new StringContent(JsonSerializer.Serialize(newRecipe), Encoding.UTF8, "application/json");
+            Guid idNew = Guid.NewGuid();
+            string recipeTitle = Request.Form["title"];
+            string recipeInstructionsInput = Request.Form["instructions"];
+            string recipeIngredientsInput = Request.Form["ingredients"];
+            List<string> ingredientsList = recipeInstructionsInput.Split('\n').ToList();
+            List<string> instructionsList = recipeIngredientsInput.Split('\n').ToList();
+            string imagePath = $"/RecipesImages/{idNew}.{System.IO.Path.GetExtension(RecipeImage.FileName)}";
+            List<string> categoryList = new List<string>();
+            for (int i = 0; i < IsCheckedCategory.Count; i++)
+            {
+                if (IsCheckedCategory[i] == true)
+                {
+                    categoryList.Add(Categories[i]);
+                }
+            }
+            RazorPagesRecipes.Protos.RecipeModel newRecipe = new RazorPagesRecipes.Protos.RecipeModel { Id = idNew.ToString(), Title = recipeTitle, ImagePath = imagePath };
+            foreach (var ingredient in ingredientsList)
+            {
+                newRecipe.Ingredients.Add(ingredient);
+            }
+            foreach (var instruction in instructionsList)
+            {
+                newRecipe.Instructions.Add(instruction);
+            }
+            foreach (var category in categoryList)
+            {
+                newRecipe.Categories.Add(category);
+            }
 
-            //    httpResponseMessage =
-            //        await _httpClient.PutAsync($"/recipe/{ChangebleId}", recipeItemJson);
+            try {
+                var updateRecipeReply = _recipesClient.UpdateRecipe(new Protos.UpdateRecipeRequest { Id=ChangebleId.ToString(),EditedRecipe=newRecipe});
 
-            //    try { httpResponseMessage.EnsureSuccessStatusCode(); }
-            //    catch (Exception ex)
-            //    {
-            //        TempData["confirmation"] = "failed";
-            //        TempData["details"] = $"Error occurred while editing! Please try again later";
-            //        return RedirectToPage("Recipes");
-            //    }
-            //    TempData["confirmation"] = "succeed";
-            //    TempData["details"] = $"Recipe edited successfully 😁";
+                //Delete Image from folder RecipeImages
+                var filePathDelete = $"{_host.WebRootPath}{ChangebleImagePath}";
+                System.IO.File.Delete(filePathDelete);
+
+                // Get the image uploaded 
+                // Save it to RecipeImages folder
+                MemoryStream ms = new MemoryStream();
+                await RecipeImage.OpenReadStream().CopyToAsync(ms);
+                var data = ms.ToArray();
+                var filePath = $"{_host.WebRootPath}/RecipesImages/{idNew}.{System.IO.Path.GetExtension(RecipeImage.FileName)}";
+                System.IO.File.WriteAllBytes(filePath, data);
+
+            }
+            catch (Exception ex)
+            {
+                TempData["confirmation"] = "failed";
+                TempData["details"] = $"Error occurred while editing! Please try again later";
+                return RedirectToPage("Recipes");
+            }
+            TempData["confirmation"] = "succeed";
+            TempData["details"] = $"Recipe edited successfully 😁";
             return RedirectToPage("Recipes");
         }
 
         public async Task<IActionResult> OnPostDelete()
         {
-            //Delete Image from folder RecipeImages
-            var filePath = $"{_host.WebRootPath}{ChangebleImagePath}";
-            System.IO.File.Delete(filePath);
-
             try
             {
                 var deleteRecipeReply =await _recipesClient.DeleteRecipeAsync(new Protos.RecipeLookUpModel { Id = ChangebleId.ToString() });
@@ -184,6 +196,11 @@ namespace RazorPagesRecipes.Pages.Recipes
                 TempData["details"] = $"Error occurred while deleting recipe. Please try again later";
                 return RedirectToPage("Recipes");
             }
+
+            //Delete Image from folder RecipeImages
+            var filePath = $"{_host.WebRootPath}{ChangebleImagePath}";
+            System.IO.File.Delete(filePath);
+
             TempData["confirmation"] = "succeed";
             TempData["details"] = $"Recipe deleted successfully";
             return RedirectToPage("Recipes");

@@ -1,26 +1,28 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-
+using RazorPagesRecipes.Protos;
 using System.Text.Json;
 
 namespace RazorPagesRecipes.Pages.Recipes
 {
     public class RecipeDetailsModel : PageModel
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly HttpClient _httpClient;
-        //public Recipe? RecipeDetails { get; set; }
-        public RecipeDetailsModel(IHttpClientFactory client)
+        private readonly RazorPagesRecipes.Protos.Recipes.RecipesClient _recipesClient;
+        public Protos.RecipeModel RecipeDetails { get; set; } = new();
+        public RecipeDetailsModel(RazorPagesRecipes.Protos.Recipes.RecipesClient recipeClient)
         {
-            _httpClientFactory = client;
-            _httpClient = _httpClientFactory.CreateClient("recipe");
+            _recipesClient = recipeClient;
         }
         public async Task OnGet(Guid id)
         {
-            var httpResponseMessage =
-                await _httpClient.GetAsync($"/recipe/{id}");
-            var recipeData = httpResponseMessage.Content.ReadAsStringAsync().Result;
-            //RecipeDetails = JsonSerializer.Deserialize<Recipe>(recipeData);
+            try
+            {
+                RecipeDetails=_recipesClient.GetRecipe(new Protos.RecipeLookUpModel { Id = id.ToString() });
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
 
         }
     }
