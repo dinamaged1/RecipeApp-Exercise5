@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Text;
-using Grpc.Net.Client;
 using Grpc.Core;
-using RazorPagesRecipes;
-using RazorPagesRecipes.Protos;
-using System.Text.Json;
 
 namespace RazorPagesRecipes.Pages.Categories
 {
@@ -88,7 +83,8 @@ namespace RazorPagesRecipes.Pages.Categories
 
         public async Task<IActionResult> OnPostDelete()
         {
-            try {
+            try
+            {
                 _client.DeleteCategory(new CategoryModel { Category = ToBeDeletedCategory });
             }
             catch (Exception ex)

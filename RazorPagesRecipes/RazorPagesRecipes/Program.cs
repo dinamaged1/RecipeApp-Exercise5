@@ -1,6 +1,7 @@
 using Grpc.Net.Client;
 using RazorPagesRecipes;
 using RazorPagesRecipes.Protos;
+using Grpc.Net.Client.Web;
 using Grpc.Core;
 using Grpc.Net;
 using Microsoft.AspNetCore.Builder;
@@ -21,12 +22,15 @@ var url = config.GetRequiredSection("url").Get<string>();
 builder.Services.AddGrpcClient<Recipes.RecipesClient>(client =>
 {
     client.Address = new Uri(url);
-});
+}).ConfigurePrimaryHttpMessageHandler(
+        () => new GrpcWebHandler(new HttpClientHandler()));
+
 
 builder.Services.AddGrpcClient<Categories.CategoriesClient>(client =>
 {
     client.Address = new Uri(url);
-});
+}).ConfigurePrimaryHttpMessageHandler(
+        () => new GrpcWebHandler(new HttpClientHandler()));
 
 // Get values from the config given their key and add it to base address of the client
 var app = builder.Build();

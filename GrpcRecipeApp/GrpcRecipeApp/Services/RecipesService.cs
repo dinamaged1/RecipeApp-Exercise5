@@ -128,6 +128,5 @@ namespace GrpcRecipeApp.Services
             string jsonString = JsonConvert.SerializeObject(_recipes);
             await WriteJsonFile("recipe", jsonString);
         }
-
     }
 }

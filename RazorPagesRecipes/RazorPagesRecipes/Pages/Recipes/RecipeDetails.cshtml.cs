@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using RazorPagesRecipes.Protos;
-using System.Text.Json;
 
 namespace RazorPagesRecipes.Pages.Recipes
 {
