@@ -28,19 +28,8 @@ builder.Services.AddGrpcClient<Categories.CategoriesClient>(client =>
     client.Address = new Uri(url);
 });
 
-var channel = GrpcChannel.ForAddress(url);
-var categoriesClient = new Categories.CategoriesClient(channel);
-var recipesClient = new Recipes.RecipesClient(channel);
-
-
-
-
 // Get values from the config given their key and add it to base address of the client
-
-
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -49,8 +38,6 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
-
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

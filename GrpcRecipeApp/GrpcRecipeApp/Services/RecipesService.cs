@@ -3,6 +3,7 @@ using Grpc.Core;
 using GrpcRecipeApp;
 using GrpcRecipeApp.Protos;
 using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace GrpcRecipeApp.Services
 {
@@ -40,11 +41,11 @@ namespace GrpcRecipeApp.Services
 
         public override async Task<RecipeModel> CreateRecipe(RecipeModel request, ServerCallContext context)
         {
-            if(request == null )
+            if (request == null)
             {
                 throw new RpcException(new Status(StatusCode.PermissionDenied, "Permission denied"));
             }
-            if(request.Title == string.Empty || request.Id == string.Empty || request.ImagePath == string.Empty || request.Ingredients == null || request.Instructions == null || request.Categories == null)
+            if (request.Title == string.Empty || request.Id == string.Empty || request.ImagePath == string.Empty || request.Ingredients == null || request.Instructions == null || request.Categories == null)
             {
                 throw new RpcException(new Status(StatusCode.PermissionDenied, "Inputs are not complete"));
             }
@@ -68,8 +69,8 @@ namespace GrpcRecipeApp.Services
             }
             else
             {
-                var selectedRecipe= _recipes.FirstOrDefault(x => x.Id == request.Id);
-                var selectedRecipeIndex= _recipes.IndexOf(selectedRecipe);
+                var selectedRecipe = _recipes.FirstOrDefault(x => x.Id == request.Id);
+                var selectedRecipeIndex = _recipes.IndexOf(selectedRecipe);
                 if (selectedRecipeIndex == -1)
                 {
                     throw new RpcException(new Status(StatusCode.PermissionDenied, "Permission denied"));
@@ -85,7 +86,7 @@ namespace GrpcRecipeApp.Services
 
         public override async Task<RecipeModel> DeleteRecipe(RecipeLookUpModel request, ServerCallContext context)
         {
-            var selectedRecipe=_recipes.FirstOrDefault(x => x.Id == request.Id);
+            var selectedRecipe = _recipes.FirstOrDefault(x => x.Id == request.Id);
             if (selectedRecipe == null)
             {
                 throw new RpcException(new Status(StatusCode.PermissionDenied, "Permission denied"));
@@ -98,8 +99,9 @@ namespace GrpcRecipeApp.Services
             }
         }
 
-        public async Task TestAddRecipe(){
-            RecipeModel newRecipe = new ();
+        public async Task TestAddRecipe()
+        {
+            RecipeModel newRecipe = new();
             newRecipe.Id = "f3eb3803-76af-4e0e-805a-956344dd7eb1";
             newRecipe.Title = "Hot Cocoa";
             newRecipe.Ingredients.Add("ing1");
@@ -108,19 +110,19 @@ namespace GrpcRecipeApp.Services
             newRecipe.Categories.Add("cat1");
             _recipes.Add(newRecipe);
             await SaveRecipeToJson();
-    }
+        }
         public async Task LoadCaregories()
         {
             string categoryJson = await ReadJsonFile("category");
             if (categoryJson == null) { return; }
-            _categories = JsonSerializer.Deserialize<List<string>>(categoryJson)!;
+            _categories = JsonConvert.DeserializeObject<List<string>>(categoryJson)!;
         }
 
         public async Task LoadRecipes()
         {
             string recipeJson = await ReadJsonFile("recipe");
             if (recipeJson == null) { return; }
-            _recipes = JsonSerializer.Deserialize<List<RecipeModel>>(recipeJson)!;
+            _recipes = JsonConvert.DeserializeObject<List<RecipeModel>>(recipeJson)!;
         }
 
         public async Task<string> ReadJsonFile(string fileName) =>
@@ -131,7 +133,7 @@ namespace GrpcRecipeApp.Services
 
         public async Task SaveRecipeToJson()
         {
-            string jsonString = JsonSerializer.Serialize(_recipes);
+            string jsonString = JsonConvert.SerializeObject(_recipes);
             await WriteJsonFile("recipe", jsonString);
         }
 

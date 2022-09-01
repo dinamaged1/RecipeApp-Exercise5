@@ -21,7 +21,7 @@ namespace RazorPagesRecipes.Pages.Recipes
         [BindProperty]
         public Guid ChangebleId { get; set; }
         [BindProperty]
-        public string ChangebleImagePath { get; set; }
+        public string ChangebleImagePath { get; set; }=string.Empty;
 
         public RecipesModel(RazorPagesRecipes.Protos.Recipes.RecipesClient recipeClient, RazorPagesRecipes.Categories.CategoriesClient categoriesClient, IWebHostEnvironment host)
         {
@@ -53,13 +53,18 @@ namespace RazorPagesRecipes.Pages.Recipes
             Categories.ForEach(x => IsCheckedCategory.Add(false));
         }
 
-        public async Task<IActionResult> OnPostAdd()
-        {
-        //    var httpResponseMessage =
-        //        await _httpClient.GetAsync($"/categories");
-        //    bool isRequestSucceed = httpResponseMessage.IsSuccessStatusCode;
-        //    var categoryData = await httpResponseMessage.Content.ReadAsStringAsync();
-        //    Categories = JsonSerializer.Deserialize<List<string>>(categoryData);
+        //public async Task<IActionResult> OnPostAdd()
+        //{
+        //    var getCategoriesReply = _categoriesClient.GetCategories(new RazorPagesRecipes.Void());
+
+        //    using var tokenSource = new CancellationTokenSource();
+        //    CancellationToken token = tokenSource.Token;
+
+        //    await foreach (var cate in getCategoriesReply.ResponseStream.ReadAllAsync(token))
+        //    {
+        //        Categories.Add(cate.Category);
+        //    }
+
         //    Guid id = Guid.NewGuid();
 
         //    // Get the image uploaded 
@@ -84,7 +89,8 @@ namespace RazorPagesRecipes.Pages.Recipes
         //            categoryList.Add(Categories[i]);
         //        }
         //    }
-        //    Recipe newRecipe = new Recipe(id, recipeTitle, imagePath, ingredientsList, instructionsList, categoryList);
+            
+        //    RazorPagesRecipes.Protos.RecipeModel newRecipe = new RazorPagesRecipes.Protos.RecipeModel { Id=id.ToString() , Title=recipeTitle, ImagePath=imagePath, Ingredients=m, Instructions=instructionsList, CategoriesategoryList };
         //    var recipeItemJson = new StringContent(JsonSerializer.Serialize(newRecipe), Encoding.UTF8, "application/json");
         //    httpResponseMessage = await _httpClient.PostAsync("/recipe", recipeItemJson);
         //    try { httpResponseMessage.EnsureSuccessStatusCode(); }
@@ -96,8 +102,8 @@ namespace RazorPagesRecipes.Pages.Recipes
         //    }
         //    TempData["confirmation"] = "succeed";
         //    TempData["details"] = $"{recipeTitle} recipe added successfully 😁";
-            return RedirectToPage("Recipes");
-        }
+        //    return RedirectToPage("Recipes");
+        //}
 
         public async Task<IActionResult> OnPostUpdate()
         {
